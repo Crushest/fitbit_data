@@ -1,0 +1,54 @@
+library(ggstatsplot)
+library(tidyverse)
+library(janitor)
+library(lubridate)
+library(scales)
+
+##Reading csv files
+daily_activity <- read.csv("dailyActivity_merged.csv")
+sleep_day <- read.csv("sleepDay_merged.csv")
+
+# #reading items
+# head(daily_activity)
+# head(sleep_day)
+# 
+# #column names
+# colnames(daily_activity)
+# colnames(sleep_day)
+# 
+# #how many distinct items
+# n_distinct(daily_activity$Id)
+# n_distinct(sleep_day$Id)
+# 
+# #summarize data needed that I plan on combining
+# daily_activity %>%
+#   select(TotalSteps,
+#          TotalDistance,
+#          SedentaryMinutes) %>%
+#   summary()
+# sleep_day %>%
+#   select(TotalSleepRecords,
+#          TotalMinutesAsleep,
+#          TotalTimeInBed) %>%
+#   summary()
+
+## Combine data
+combined_data <- merge(sleep_day, daily_activity, by="Id")
+combined_data <- janitor::clean_names(combined_data)
+
+
+
+##Sleep compared to activity
+ggplot(data=combined_data, aes(x=fairly_active_minutes,y=total_minutes_asleep)) + geom_point()
+
+##Steps to active minutes
+ggplot(data=daily_activity, aes(x=TotalSteps, y=SedentaryMinutes)) + geom_point()
+
+#Time asleep to time in bed
+ggplot(data=sleep_day, aes(x=TotalMinutesAsleep, y=TotalTimeInBed)) + geom_point()
+
+
+
+
+
+
